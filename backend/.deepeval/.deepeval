@@ -1,0 +1,1 @@
+{"LITELLM_MODEL_NAME": "groq/openai/gpt-oss-120b", "LITELLM_API_BASE": "https://api.groq.com/openai/v1", "USE_LOCAL_MODEL": "YES", "LOCAL_MODEL_FORMAT": "json", "LOCAL_MODEL_BASE_URL": "https://api.groq.com/openai/v1", "LOCAL_MODEL_NAME": "openai/gpt-oss-120b"}

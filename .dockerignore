@@ -1,0 +1,9 @@
+.git
+.github
+node_modules
+venv
+.venv
+.next
+__pycache__
+*.pyc
+*.md

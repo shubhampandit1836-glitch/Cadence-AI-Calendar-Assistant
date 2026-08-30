@@ -1,0 +1,66 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-unit-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run unit tests (mocked, no external services)
+        run: pytest tests/test_calendar_service_unit.py tests/test_document_repository_unit.py -v
+
+  backend-eval-suite:
+    runs-on: ubuntu-latest
+    needs: backend-unit-tests
+    defaults:
+      run:
+        working-directory: backend
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgrespassword
+          POSTGRES_DB: agentic_calendar_db
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://postgres:postgrespassword@localhost:5433/agentic_calendar_db
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      MODEL_PROVIDER: groq
+      MODEL_NAME: ${{ secrets.GROQ_MODEL_NAME }}
+      GROQ_CLASSIFIER_MODEL: ${{ secrets.GROQ_CLASSIFIER_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run migrations
+        if: ${{ env.GROQ_API_KEY != '' }}
+        run: python scripts/migrate.py
+      - name: Seed eval documents
+        if: ${{ env.GROQ_API_KEY != '' }}
+        run: python tests/seed_eval_documents.py
+      - name: Run eval suite (DeepEval + RAGAS)
+        if: ${{ env.GROQ_API_KEY != '' }}
+        run: pytest -v

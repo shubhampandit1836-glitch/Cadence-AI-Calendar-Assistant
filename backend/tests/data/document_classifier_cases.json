@@ -1,0 +1,18 @@
+[
+  {"text": "Q3 Product Sync Agenda\nDate: Sep 3, 2026, 10:00-11:00 AM IST\nAttendees: Priya Sharma, Arjun Mehta\nAgenda: Review Q2 metrics, onboarding update, beta timeline.", "expected_relevant": true},
+  {"text": "Sprint 14 Planning Brief\nSprint window: Aug 25-Sep 5\nGoal: Ship checkout redesign to 50% traffic.\nTasks: CHK-102 payment selector, owner Rahul Verma, due Aug 28.", "expected_relevant": true},
+  {"text": "Client Onboarding Meeting Notes\nAttendees: John Carter (Meridian Logistics), Priya Sharma\nAction items: send scoping doc by Aug 29, schedule follow-up call week of Sep 1.", "expected_relevant": true},
+  {"text": "DevSummit 2026 Travel Itinerary\nSep 14-16, Bengaluru Convention Centre\nDay 1: Registration, keynote, RAG workshop\nBlock Sep 13 and 17 as out-of-office.", "expected_relevant": true},
+  {"text": "Weekly team standup notes: yesterday's blockers, today's plan, sprint burndown chart attached. Next standup Thursday 9am.", "expected_relevant": true},
+  {"text": "Project roadmap Q4 2026: milestone dates, feature freeze Nov 1, release candidate Nov 15, GA launch Dec 1. Owner assignments per team.", "expected_relevant": true},
+  {"text": "Curriculum Vitae\nShubham Pandit\nEducation: B.Tech Computer Science\nSkills: Python, FastAPI, LangGraph\nExperience: ML Engineering Intern", "expected_relevant": false},
+  {"text": "INVOICE #4471\nBill To: Acme Corp\nItem: Cloud hosting services\nAmount Due: $1,240.00\nDue Date: Sep 15, 2026", "expected_relevant": false},
+  {"text": "Chapter 1: The old house stood at the end of the lane, its windows dark and its garden overgrown with ivy and forgotten roses.", "expected_relevant": false},
+  {"text": "Introduction to Data Structures\nChapter 3: Binary Search Trees\nA binary search tree is a node-based binary tree data structure with the property that...", "expected_relevant": false},
+  {"text": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])", "expected_relevant": false},
+  {"text": "Patient Medical Record\nName: Redacted\nDate of visit: Aug 12, 2026\nDiagnosis: seasonal allergies\nPrescribed: antihistamine, 10mg daily", "expected_relevant": false},
+  {"text": "Grocery receipt: Milk $3.20, Bread $2.50, Eggs $4.10, Total: $9.80, Thank you for shopping with us.", "expected_relevant": false},
+  {"text": "Terms and Conditions\nBy using this service you agree to the following clauses regarding liability, data usage, and dispute resolution...", "expected_relevant": false},
+  {"text": "Meeting Minutes - Vendor Contract Review\nDiscussed renewal terms with Acme Supplies for Q4. Next check-in scheduled for Oct 5 at 2pm.", "expected_relevant": true},
+  {"text": "Recipe: Chicken Biryani\nIngredients: 500g chicken, 2 cups basmati rice, spices...\nInstructions: marinate chicken for 2 hours...", "expected_relevant": false}
+]

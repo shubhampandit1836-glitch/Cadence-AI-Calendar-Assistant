@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What's the sprint goal for Sprint 14?",
+    "ground_truth": "Ship the redesigned checkout flow to 50% of production traffic."
+  },
+  {
+    "question": "Who owns the payment method selector task and when is it due?",
+    "ground_truth": "Rahul Verma owns it, due August 28, 2026."
+  },
+  {
+    "question": "What time is the daily standup during Sprint 14?",
+    "ground_truth": "9:15 AM IST, 15 minutes, every weekday during the sprint."
+  },
+  {
+    "question": "What risk was flagged in the Sprint 14 plan?",
+    "ground_truth": "Payment gateway sandbox credentials are still pending from finance, a blocker for the payment method selector task."
+  },
+  {
+    "question": "What is the Q3 product sync meeting about?",
+    "ground_truth": "Reviewing Q2 retention metrics, an engineering update on the onboarding flow, a design system walkthrough, and the Q3 mobile app beta timeline."
+  },
+  {
+    "question": "When is the Q3 product sync scheduled?",
+    "ground_truth": "September 3, 2026, 10:00-11:00 AM IST."
+  },
+  {
+    "question": "What action item involves John Carter in the client onboarding notes?",
+    "ground_truth": "Send a technical scoping document to John Carter by August 29, and schedule a follow-up call the week of September 1."
+  },
+  {
+    "question": "What are the DevSummit 2026 travel dates that should be blocked as out-of-office?",
+    "ground_truth": "September 13 and September 17, 2026."
+  },
+  {
+    "question": "When should the internal debrief call be scheduled after DevSummit?",
+    "ground_truth": "A 20-minute debrief on the evening of September 15, after the sponsor meeting."
+  },
+  {
+    "question": "Who is responsible for QA in Sprint 14 and what is the task?",
+    "ground_truth": "Sanjay Iyer, responsible for the QA pass and accessibility audit, due September 4."
+  }
+]
