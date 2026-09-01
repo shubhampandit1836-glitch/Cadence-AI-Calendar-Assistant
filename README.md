@@ -329,6 +329,16 @@ Documented deliberately, rather than hidden — an accurate account of trade-off
 
 ---
 
+## Deployment
+
+This project is deployed as a single Docker container on Render's free tier — Postgres, the FastAPI backend, and the Next.js frontend all run together in one service, managed by `supervisord`, behind one shared URL.
+
+**Why single-container:** one free link, zero cost, no need to coordinate multiple providers or environment variables across separate services.
+
+**Trade-off:** Render's free tier uses ephemeral disk, so the database resets on every sleep/wake cycle (the service sleeps after 15 minutes of inactivity). This is acceptable for a shareable demo but means data doesn't persist long-term — worth knowing if you're testing features that depend on saved state across sessions.
+
+See `Dockerfile.all-in-one`, `deploy/start.sh`, and `deploy/supervisord.conf` for the full container setup — Postgres initializes and runs migrations on every cold start, then `supervisord` brings up the backend and frontend together.
+
 ## License
 
 MIT
