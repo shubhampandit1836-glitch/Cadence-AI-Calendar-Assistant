@@ -12,7 +12,11 @@ RUN npm run build
 FROM python:3.11-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc libpq-dev postgresql postgresql-contrib nodejs npm supervisor curl \
+    gnupg2 lsb-release curl \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/postgresql.gpg] http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev postgresql-17 postgresql-contrib-17 postgresql-17-pgvector nodejs npm supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
