@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-PG_BIN=$(dirname $(find /usr/lib/postgresql -name initdb | head -n1))
+PG_BIN=/usr/lib/postgresql/17/bin
 
-# Initialize Postgres data dir if empty (fresh container each cold start)
 if [ ! -s "$PGDATA/PG_VERSION" ]; then
     su postgres -c "$PG_BIN/initdb -D $PGDATA"
     su postgres -c "$PG_BIN/pg_ctl -D $PGDATA -l /var/log/postgres.log start"
@@ -16,7 +15,6 @@ fi
 
 export DATABASE_URL="postgresql://app:apppassword@localhost:5432/agentic_calendar_db"
 
-# Run migrations before starting services
 su postgres -c "$PG_BIN/pg_ctl -D $PGDATA -l /var/log/postgres.log start"
 sleep 3
 cd /app/backend && DATABASE_URL=$DATABASE_URL python scripts/migrate.py
