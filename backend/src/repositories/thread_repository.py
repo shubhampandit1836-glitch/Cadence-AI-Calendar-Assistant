@@ -1,5 +1,6 @@
 from typing import Any, Dict, List
 from datetime import datetime, timezone
+import psycopg
 from src.config.db_pool import get_pool, reset_pool
 
 
@@ -10,23 +11,35 @@ def _make_title(text: str, max_len: int = 28) -> str:
     return text[:max_len].rsplit(" ", 1)[0] + "…"
 
 
-async def upsert_thread(thread_id: str, oauth_user_id: str, title: str) -> None:
-    short_title = _make_title(title)
-    now = datetime.now(timezone.utc)
+async def upsert_thread(thread_id: str, oauth_user_id: str, last_message: str) -> None:
+    """On first insert, derive a short title from the message via _make_title. On
+    conflict (existing thread), only bump updated_at — the title stays as it was set
+    on creation, so it doesn't keep changing every time the user sends a new message."""
+    title = _make_title(last_message)
     for attempt in (1, 2):
         try:
             pool = await get_pool()
             async with pool.connection() as conn:
                 await conn.execute(
                     """
-                    INSERT INTO threads (id, oauth_user_id, title, created_at, updated_at)
-                    VALUES (%s, %s, %s, %s, %s)
-                    ON CONFLICT (id) DO UPDATE SET updated_at = EXCLUDED.updated_at
+                    INSERT INTO threads (id, oauth_user_id, title, updated_at)
+                    VALUES (%s, %s, %s, now())
+                    ON CONFLICT (id) DO UPDATE
+                    SET updated_at = now()
                     """,
-                    (thread_id, oauth_user_id, short_title, now, now),
+                    (thread_id, oauth_user_id, title),
                 )
             return
+        except psycopg.errors.ForeignKeyViolation:
+            # Permanent — the oauth_user_id doesn't exist in `users`. Retrying or
+            # resetting the pool won't fix this and would break other concurrent
+            # queries sharing the pool. Raise immediately.
+            raise
+        except psycopg.errors.IntegrityError:
+            raise
         except Exception:
+            # Only genuinely transient failures (dropped connection, etc.) should
+            # reset the shared pool.
             if attempt == 1:
                 await reset_pool()
                 continue
@@ -59,7 +72,7 @@ async def list_threads(oauth_user_id: str) -> List[Dict[str, Any]]:
                 )
                 rows = await cur.fetchall()
                 return [
-                    {"id": r["id"], "title": r["title"], "updated_at": r["updated_at"].isoformat()} # type: ignore[call-overload]
+                    {"id": r["id"], "title": r["title"], "updated_at": r["updated_at"].isoformat()}  # type: ignore[call-overload]
                     for r in rows
                 ]
         except Exception:
@@ -89,3 +102,4 @@ async def delete_thread_and_checkpoint(thread_id: str, oauth_user_id: str) -> No
                 await reset_pool()
                 continue
             raise
+        
