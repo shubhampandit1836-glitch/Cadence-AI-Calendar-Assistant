@@ -1,0 +1,40 @@
+FROM node:20-slim AS frontend-builder
+WORKDIR /frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend/ .
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ARG NEXT_PUBLIC_DESCOPE_PROJECT_ID
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+ENV NEXT_PUBLIC_DESCOPE_PROJECT_ID=${NEXT_PUBLIC_DESCOPE_PROJECT_ID}
+RUN npm run build
+
+FROM python:3.11-slim
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc libpq-dev postgresql postgresql-contrib nodejs npm supervisor curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Backend
+COPY backend/requirements.txt ./backend/requirements.txt
+RUN pip install --no-cache-dir -r backend/requirements.txt
+COPY backend/ ./backend/
+ENV GIT_PYTHON_REFRESH=quiet
+
+# Frontend (prebuilt standalone output)
+COPY --from=frontend-builder /frontend/.next/standalone ./frontend/
+COPY --from=frontend-builder /frontend/.next/static ./frontend/.next/static
+
+# Postgres init
+ENV PGDATA=/var/lib/postgresql/data
+RUN mkdir -p /var/lib/postgresql/data && chown -R postgres:postgres /var/lib/postgresql/data
+
+# Supervisor config
+COPY deploy/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY deploy/start.sh /start.sh
+RUN chmod +x /start.sh
+
+EXPOSE 10000
+CMD ["/start.sh"]
